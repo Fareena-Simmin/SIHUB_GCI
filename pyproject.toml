@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools>=61", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "sihub-bin-sync"
+version = "0.1.0"
+description = "Config-driven CSV-first gateway BIN sync job for Juspay gatewayCardInfo."
+readme = "README.md"
+requires-python = ">=3.7"
+dependencies = [
+  "PyYAML>=6.0,<7.0",
+]
+
+[project.scripts]
+sihub-bin-sync = "sihub_bin_sync.cli:main"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]

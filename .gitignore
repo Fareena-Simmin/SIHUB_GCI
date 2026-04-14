@@ -1,0 +1,17 @@
+__pycache__/
+*.pyc
+.pytest_cache/
+.mypy_cache/
+.DS_Store
+.venv/
+venv/
+
+runtime/state/*.json
+runtime/reports/*.json
+runtime/reports/*.md
+runtime/processed/*
+runtime/failed/*
+!runtime/processed/.gitkeep
+!runtime/failed/.gitkeep
+!runtime/reports/.gitkeep
+!runtime/state/.gitkeep

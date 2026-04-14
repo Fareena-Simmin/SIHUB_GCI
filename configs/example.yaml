@@ -1,0 +1,94 @@
+api:
+  base_url: "https://euler-x.internal.staging.mum.juspay.net"
+  list_path: "/api/ec/v1/admin/gatewayCardInfo/list"
+  batch_create_path: "/ec/v1/admin/gatewayCardInfo/batch"
+  update_path_template: "/api/ec/v1/admin/gatewayCardInfo/{id}"
+  timeout_seconds: 30
+  change_description: "SI Hub BIN sync"
+  headers_from_env:
+    x-device-type: "JUSPAY_DEVICE_TYPE"
+    x-tenant-id: "JUSPAY_TENANT_ID"
+    x-web-logintoken: "JUSPAY_LOGIN_TOKEN"
+    Cookie: "JUSPAY_COOKIE"
+
+runtime:
+  state_file: "runtime/state/manifest.json"
+  reports_dir: "runtime/reports"
+  processed_dir: "runtime/processed"
+  failed_dir: "runtime/failed"
+
+defaults:
+  auth_type: "THREE_DS"
+  validation_type: "CARD_MANDATE"
+  payment_method_type: "CARD"
+  min_isin_length: 6
+  max_isin_length: 9
+
+slices:
+  - name: "payu-visa"
+    gateway: "PAYU"
+    network: "VISA"
+    enabled: true
+    source:
+      type: "csv"
+      file: "runtime/incoming/shared/gateway_snapshot_*.csv"
+      header_row: 1
+      encoding: "utf-8-sig"
+      delimiter: ","
+      quotechar: "\""
+      allow_empty_snapshot: false
+      columns:
+        isin: "card_bin"
+        gateway: "gateway"
+        network: "network"
+      normalization:
+        gateway:
+          payu: "PAYU"
+        network:
+          visa: "VISA"
+          visa card: "VISA"
+
+  - name: "payu-mastercard"
+    gateway: "PAYU"
+    network: "MASTERCARD"
+    enabled: true
+    source:
+      type: "csv"
+      file: "runtime/incoming/shared/gateway_snapshot_*.csv"
+      header_row: 1
+      encoding: "utf-8-sig"
+      delimiter: ","
+      quotechar: "\""
+      allow_empty_snapshot: false
+      columns:
+        isin: "card_bin"
+        gateway: "gateway"
+        network: "network"
+      normalization:
+        gateway:
+          payu: "PAYU"
+        network:
+          mastercard: "MASTERCARD"
+          master: "MASTERCARD"
+
+  - name: "billdesk-visa"
+    gateway: "BILLDESK"
+    network: "VISA"
+    enabled: true
+    source:
+      type: "csv"
+      file: "runtime/incoming/shared/gateway_snapshot_*.csv"
+      header_row: 1
+      encoding: "utf-8-sig"
+      delimiter: ","
+      quotechar: "\""
+      allow_empty_snapshot: false
+      columns:
+        isin: "bin"
+        gateway: "gateway_name"
+        network: "card_network"
+      normalization:
+        gateway:
+          billdesk: "BILLDESK"
+        network:
+          visa: "VISA"
